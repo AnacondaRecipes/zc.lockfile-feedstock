@@ -1,42 +1,54 @@
 {% set name = "zc.lockfile" %}
-{% set version = "2.0" %}
+{% set version = "3.0.post1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 307ad78227e48be260e64896ec8886edc7eae22d8ec53e4d528ab5537a83203b
+  url: https://github.com/zopefoundation/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: dd1394cdbf92658ddaaabc4e005fd4bdd88bff0d564e020da6e85216bf89756b
 
 build:
-  preserve_egg_dir: True
   number: 0
-  noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<37]
 
 requirements:
   host:
     - python
     - pip
-
+    - wheel
+    - setuptools
   run:
     - python
-    - setuptools
 
 test:
   imports:
     - zc
     - zc.lockfile
+  commands:
+    - pip check
+  requires:
+    - pip
 
 about:
   home: https://github.com/zopefoundation/zc.lockfile
+  summary: Basic inter-process locks
   license: ZPL 2.1
   license_file: LICENSE.txt
   license_family: Other
-  summary: 'Basic inter-process locks'
+  description: |
+    The zc.lockfile package provides a basic portable implementation of interprocess locks using lock files.
+    The purpose if not specifically to lock files, but to simply provide locks with an implementation based
+    on file-locking primitives. Of course, these locks could be used to mediate access to other files.
+    For example, the ZODB file storage implementation uses file locks to mediate access to file-storage
+    database files. The database files and lock file files are separate files.
   dev_url: https://github.com/zopefoundation/zc.lockfile
+  doc_url: https://github.com/zopefoundation/zc.lockfile/blob/master/README.rst
 
 extra:
   recipe-maintainers:
     - pmlandwehr
+  skip-lints:
+    - incorrect_license
