@@ -1,30 +1,30 @@
 {% set name = "zc.lockfile" %}
-{% set version = "4.0" %}
+{% set version = "4.1" %}
 
+# Unable to run tests, zope.testing is not in the main channel.
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
   url: https://github.com/zopefoundation/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
-  sha256: 9def32a8a78d7396d7ce2f33e109b9a4627ec236c0318daf7c806ee31370b957
+  sha256: 2264350037cdc331ccd75a0cbe3edff6b36bb9852ec9d4659eace8fb5015bf35
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: true  # [py<39]
+  skip: true  # [py<311]
 
 requirements:
   host:
     - python
     - pip
     - wheel
-    - setuptools >=78.1.1
+    - setuptools >=78.1.1,<82
   run:
     - python
     - setuptools
 
-# Unable to run tests, zope.testing is not in the main channel.
 test:
   imports:
     - zc
